@@ -1,0 +1,45 @@
+https://leetcode.com/problems/rotting-oranges/description/
+class Solution {
+public:
+    bool isGoodOrange(int x1, int y1, int m, int n, vector<vector<int>>& grid){
+        return x1 >= 0 and x1 < m and y1 >= 0 and y1 < n and grid[x1][y1] == 1; 
+    }
+    int bfs(vector<vector<int>>& grid, queue<pair<pair<int,int>,int>>& q){
+        int mini = 0;
+        int x[] = {1,-1,0,0};
+        int y[] = {0,0,-1,1};
+        while(!q.empty()){
+            auto node = q.front().first;
+            int time = q.front().second;
+            q.pop();
+            mini = max(mini, time);
+            for(int i=0;i<4;i++){
+                int x1 = node.first + x[i];
+                int y1 = node.second + y[i];
+                if(isGoodOrange(x1,y1,grid.size(), grid[0].size(), grid)){
+                    q.push({{x1,y1},time+1});
+                    grid[x1][y1] = 2;
+                }
+            }
+        }
+        return mini;
+    }
+    int orangesRotting(vector<vector<int>>& grid) {
+        queue<pair<pair<int,int>,int>>q;
+        for(int i=0;i<grid.size();i++){
+            for(int j=0;j<grid[i].size();j++){
+                if(grid[i][j]==2){
+                    q.push({{i,j},0});
+                }
+            }
+        }
+        int mini = bfs(grid, q);
+        cout<<mini<<endl;
+        for(int i=0;i<grid.size();i++){
+            for(int j=0;j<grid[i].size();j++){
+                if(grid[i][j] == 1) return -1;
+            }
+        }
+        return mini;
+    }
+};
